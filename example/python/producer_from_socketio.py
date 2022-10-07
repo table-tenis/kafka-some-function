@@ -108,6 +108,7 @@ from datetime import datetime
 from json import dumps
 from confluent_kafka import Producer
 from confluent_kafka.error import KafkaException, KafkaError
+import threading
 
 p = Producer({'bootstrap.servers': '172.21.100.174:29092', 'linger.ms': 20000, 'batch.num.messages': 10,
               'queue.buffering.max.messages': 1000, 'acks': 1,
