@@ -32,12 +32,12 @@ def main():
     # frame = cv2.resize(image, (10000, 2500),
     #            interpolation = cv2.INTER_NEAREST)
     imgbyte = pickle.dumps(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])[1])
-    print(type(imgbyte), len(imgbyte))
+    # print(type(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])[1]), len(cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])[1]))
     
     # p = Producer({'bootstrap.servers': '172.21.100.154:9092', 'linger.ms': 5000, 'batch.num.messages': 10,
     #           'queue.buffering.max.messages': 1000, 'acks': 1, 'message.max.bytes': 20485880,
     #           'delivery.timeout.ms': 10000, 'request.timeout.ms':2000, 'retries':2, 'retry.backoff.ms':5})
-    p = Producer({'bootstrap.servers': 'X1server.local:9092', 'message.max.bytes': 20485880,
+    p = Producer({'bootstrap.servers': '172.21.100.154:9092', 'message.max.bytes': 20485880,
                   'batch.num.messages': 10, 'queue.buffering.max.messages': 1000})
     # Initialize procuder
     # Read frame
@@ -69,7 +69,7 @@ def main():
         # a = dumps({'num':NUM_INSERTED, 'bytes':imgbyte.hex()}).encode('utf-8')
         # print(len(a))
         try:
-            p.produce('RawImage_Test', imgbyte, on_delivery=delivery_report)
+            p.produce('Test_C', imgbyte, on_delivery=delivery_report)
         except Exception as e:
             print(e)
         # if NUM_INSERTED % 50 == 0:
@@ -78,7 +78,7 @@ def main():
             # p.flush()
             number_event = p.poll(0)
             COUNT += number_event
-            # print("number_event = ", number_event)
+            print("number_event = ", number_event)
         end = time() - start
         # print("time produce = ", end*1000.0, " ms, Number Inserted = ", NUM_INSERTED)
         if 0.017 - end > 0:

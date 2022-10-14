@@ -14,6 +14,12 @@ services:
         volumes:
           - ./zookeeper_data:/var/lib/zookeeper/data
           - ./zookeeper_log:/var/lib/zookeeper/log
+        healthcheck:
+          test: nc -z localhost 2181
+          interval: 10s
+          timeout: 2s
+          retries: 3
+          start_period: 10s
 
     broker:
         image: confluentinc/cp-enterprise-kafka:latest
@@ -42,6 +48,12 @@ services:
             KAFKA_MESSAGE_MAX_BYTES: 10485880
             KAFKA_REPLICA_FETCH_MAX_BYTES: 10485880
             KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 60000
+        healthcheck:
+          test: nc -z localhost 9092
+          interval: 10s
+          timeout: 2s
+          retries: 3
+          start_period: 10s
 
     schema-registry:
         image: confluentinc/cp-schema-registry
@@ -56,6 +68,12 @@ services:
             SCHEMA_REGISTRY_HOST_NAME: schema-registry
             SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
             SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+        healthcheck:
+          test: nc -z localhost 8081
+          interval: 10s
+          timeout: 2s
+          retries: 3
+          start_period: 10s
 
     control-center:
         image: confluentinc/cp-enterprise-control-center:latest
@@ -79,6 +97,12 @@ services:
             CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
             CONFLUENT_METRICS_TOPIC_REPLICATION: 1
             PORT: 9021
+        healthcheck:
+          test: nc -z localhost 9021
+          interval: 10s
+          timeout: 2s
+          retries: 3
+          start_period: 10s
 
     rest-proxy:
         image: confluentinc/cp-kafka-rest:latest
@@ -94,6 +118,12 @@ services:
             KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
             KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
             KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+        healthcheck:
+          test: nc -z localhost 8082
+          interval: 10s
+          timeout: 2s
+          retries: 3
+          start_period: 10s
 
     kafka-topics-ui:
         image: landoop/kafka-topics-ui:0.9.4
@@ -108,3 +138,9 @@ services:
         environment:
             KAFKA_REST_PROXY_URL: "http://rest-proxy:8082/"
             PROXY: "true"
+        healthcheck:
+          test: nc -z localhost 8000
+          interval: 10s
+          timeout: 2s
+          retries: 3
+          start_period: 10s
